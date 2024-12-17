@@ -1,0 +1,22 @@
+music = {
+    "call it": "https://www.youtube.com/watch?v=QyIddksa1zY",
+    "tujhe sochta hoon": "https://www.youtube.com/watch?v=w1R1uwmOf10",
+    "allah hafiz": "https://www.youtube.com/watch?v=IIXDeI0xcVc",
+    "yaaron": "https://www.youtube.com/watch?v=1VA3idMQKmc",
+    "pyaar ke pal": "https://www.youtube.com/watch?v=zcI6SFiK_yk",
+    "aankhon mein teri": "https://www.youtube.com/watch?v=ab6N5U82P4U",
+    "khuda jaane": "https://www.youtube.com/watch?v=wipjW9iV9A0",
+    "beete lamhein": "https://www.youtube.com/watch?v=E0QhB3eb6M4",
+    "dil ibaadat": "https://www.youtube.com/watch?v=X_8xM2UtBFg",
+    "tu hi meri shab hai": "https://www.youtube.com/watch?v=2JHbiJ6PzIY",
+    "zara sa": "https://www.youtube.com/watch?v=NvkTqQCift4",
+    "labon ko": "https://www.youtube.com/watch?v=05iOVn7rI5w",
+    "ajab si": "https://youtu.be/7O5Uoav1764?si=0SHLddpSAdGEulBp",
+    "hasi": "https://www.youtube.com/watch?v=f8jZx3K95T8",
+    "tadap tadap": "https://www.youtube.com/watch?v=kgpzxR0v5c8",
+    "aashayein": "https://www.youtube.com/watch?v=bdtchZplTXw",
+    "kaise mujhe": "https://www.youtube.com/watch?v=-4D1oFF4q-o",
+    "sach keh raha hai": "https://www.youtube.com/watch?v=QJPUCcBOJ9Q",
+    "main khuda": "https://www.youtube.com/watch?v=1Ibx2lMiHSw",
+    "raat baaki": "https://www.youtube.com/watch?v=a1GBbO6ifL0"
+}
