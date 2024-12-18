@@ -3,7 +3,14 @@ import webbrowser
 import pyttsx3
 import musicLibrary
 import difflib
+import os
+from dotenv import load_dotenv
+import requests
 
+load_dotenv()
+NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+url = f'https://newsapi.org/v2/top-headlines?country=us&apiKey={NEWS_API_KEY}'
+       
 recogniser = sr.Recognizer()
 engine = pyttsx3.init()
 
@@ -16,7 +23,7 @@ def speak(text):
     engine.runAndWait()
 
 def processCommand(c):
-    print(c)
+    # print(c)
     if "open google" in c.lower():
         webbrowser.open("https://google.com")
     elif "open instagram" in c.lower():
@@ -38,6 +45,19 @@ def processCommand(c):
             speak(f"Sorry, I couldn't find {song} in yout library.")
             print(f"Error: {song} not found in the music library.")
 
+    elif "news" in c.lower():
+        r = requests.get(url)
+        if r.status_code == 200:
+            data = r.json()
+
+            #Extract all articles
+            articles = data.get('articles', [])
+
+            #Speak the healines
+            for article in articles[:10]:
+                speak(article['title'])
+
+
 if __name__ == "__main__":
     speak("Initializing")
     # print(sr.Microphone.list_microphone_names())
@@ -55,14 +75,14 @@ if __name__ == "__main__":
                 # print(audio)
             wake_word = r.recognize_google(audio)
             print(wake_word)
-            if("sachin" in wake_word.lower()):
+            if("hello" in wake_word.lower()):
                 speak("activated...")
                 #listen for command
                 with sr.Microphone() as source:
                     r.adjust_for_ambient_noise(source)
                     audio = r.listen(source)
                     command = r.recognize_google(audio)
-                    print(command)
+                    # print(command)
                     processCommand(command)
 
         except Exception as e:
