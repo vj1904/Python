@@ -6,6 +6,7 @@ import difflib
 import os
 from dotenv import load_dotenv
 import requests
+from openai import OpenAI
 
 load_dotenv()
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
@@ -13,6 +14,23 @@ url = f'https://newsapi.org/v2/top-headlines?country=us&apiKey={NEWS_API_KEY}'
        
 recogniser = sr.Recognizer()
 engine = pyttsx3.init()
+
+def handleAiProcess(command):
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    client = OpenAI(
+    api_key= OPENAI_API_KEY
+    )
+    completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    store=True,
+    max_tokens=80,            # Limit the response length
+    temperature=0.2,          # For StraightForward replies
+    messages=[{"role": "system", "content": "You are a virtual assitant skilled in general logic and reasoning tasks like Alexa and Google Cloud. Give short reponses."},
+        {"role": "user", "content": command}
+    ]
+    )
+
+    return (completion.choices[0].message.content);
 
 def findClosestSong(requested_song, library):
     matches = difflib.get_close_matches(requested_song, library.keys(), n=1, cutoff=0.6)
@@ -57,6 +75,11 @@ def processCommand(c):
             for article in articles[:10]:
                 speak(article['title'])
 
+    else:
+        # Pass the command to openAi
+        output = handleAiProcess(c)
+        # print(output)
+        speak(output)
 
 if __name__ == "__main__":
     speak("Initializing")
