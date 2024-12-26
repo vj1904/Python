@@ -14,3 +14,7 @@ __pycache__/
 
 #Ignore .env
 .env
+
+#Ignore test.py
+test.py
+client.py

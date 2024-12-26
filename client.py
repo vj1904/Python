@@ -13,7 +13,7 @@ completion = client.chat.completions.create(
   model="gpt-3.5-turbo",
   store=True,
   messages=[{"role": "system", "content": "You are a virtual assitant skilled in general logic and reasoning tasks like Alexa and Google Cloud"},
-    {"role": "user", "content": "write a haiku about ai"}
+    {"role": "user", "content": 'Who is the prime minister of India?'}
   ]
 )
 
