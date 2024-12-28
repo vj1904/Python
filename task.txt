@@ -1,0 +1,5 @@
+task list
+convert material received from category to aggregate
+go to gym
+practice TSA hard on lead code
+complete the assignment
