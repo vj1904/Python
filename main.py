@@ -45,6 +45,22 @@ def getWakeWord():
             print("Error; {0}".format(e))
     return wake_word
 
+# Function to handle open command
+def handleOpenCommand(c):
+    try:
+        if "open google" in c.lower():
+            webbrowser.open("https://google.com")
+        elif "open instagram" in c.lower():
+            webbrowser.open("https://instagram.com")
+        elif "open spotify" in c.lower():
+            webbrowser.open("https://spotify.com")
+        elif "open youtube" in c.lower():
+            webbrowser.open("https://youtube.com")
+        elif "open linkedin" in c.lower():
+            webbrowser.open("https://linkedin.com")
+    except Exception as e:
+        print("Error; {0}".format(e)) 
+
 # Function to get list name
 def getListName(command):
     words = command.split()
@@ -73,69 +89,14 @@ def addTask(listName):
         except Exception as e:
             print("Error; {0}".format(e))
 
-# Function to read task inside the list
-# def readTask(listName):
-
-
-# Function to handle general commands with the help of openai
-def handleAiProcess(command):
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    client = OpenAI(
-    api_key= OPENAI_API_KEY
-    )
-    completion = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    store=True,
-    max_tokens=80,            # Limit the response length
-    temperature=0.2,          # For StraightForward replies
-    messages=[{"role": "system", "content": "You are a virtual assitant skilled in general logic and reasoning tasks like Alexa and Google Cloud. Give short reponses."},
-        {"role": "user", "content": command}]
-    )
-
-    return (completion.choices[0].message.content)
-
-# Function to process the input command.
-def processCommand(c):
-    # print(c)
+# Function to handle different operations related to list
+def handleListOperations(c):
     try:
-        if "open google" in c.lower():
-            webbrowser.open("https://google.com")
-        elif "open instagram" in c.lower():
-            webbrowser.open("https://instagram.com")
-        elif "open spotify" in c.lower():
-            webbrowser.open("https://spotify.com")
-        elif "open youtube" in c.lower():
-            webbrowser.open("https://youtube.com")
-        elif "open linkedin" in c.lower():
-            webbrowser.open("https://linkedin.com")
-        elif "play" in c.lower():
-            song = " ".join(c.lower().split(" ")[1:])
-            closest_match = findClosestSong(song, musicLibrary.music)
-            if closest_match:
-                link = musicLibrary.music[closest_match]
-                webbrowser.open(link)
-                speak(f"Playing {closest_match}")
-            else:
-                speak(f"Sorry, I couldn't find {song} in yout library.")
-                print(f"Error: {song} not found in the music library.")
-
-        elif "news" in c.lower():
-            r = requests.get(url)
-            if r.status_code == 200:
-                data = r.json()
-
-                #Extract all articles
-                articles = data.get('articles', [])
-
-                #Speak the healines
-                for article in articles[:10]:
-                    speak(article['title'])
-
-        elif "create" in c.lower() and "list" in c.lower():
-            listName = getListName(c)
-            with open (f"{listName}.txt", "w") as file:
-                file.write(f"{listName} list\n")
-            addTask(listName)
+        if "create" in c.lower() and "list" in c.lower():
+                listName = getListName(c)
+                with open (f"{listName}.txt", "w") as file:
+                    file.write(f"{listName} list\n")
+                addTask(listName)
 
         elif "add" in c.lower() and "list" in c.lower():
             listName = getListName(c)
@@ -169,6 +130,59 @@ def processCommand(c):
                 speak(f"{listName} list has been deleted succesfully")
             except:
                 speak(f"{listName} list does not exists.")    
+    except Exception as e:
+        print("Error; {0}".format(e))      
+
+
+# Function to handle general commands with the help of openai
+def handleAiProcess(command):
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    client = OpenAI(
+    api_key= OPENAI_API_KEY
+    )
+    completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    store=True,
+    max_tokens=80,            # Limit the response length
+    temperature=0.2,          # For StraightForward replies
+    messages=[{"role": "system", "content": "You are a virtual assitant skilled in general logic and reasoning tasks like Alexa and Google Cloud. Give short reponses."},
+        {"role": "user", "content": command}]
+    )
+
+    return (completion.choices[0].message.content)
+
+# Function to process the input command.
+def processCommand(c):
+    # print(c)
+    try:
+        if "open" in c.lower():
+            handleOpenCommand(c)
+
+        elif "play" in c.lower():
+            song = " ".join(c.lower().split(" ")[1:])
+            closest_match = findClosestSong(song, musicLibrary.music)
+            if closest_match:
+                link = musicLibrary.music[closest_match]
+                webbrowser.open(link)
+                speak(f"Playing {closest_match}")
+            else:
+                speak(f"Sorry, I couldn't find {song} in yout library.")
+                print(f"Error: {song} not found in the music library.")
+
+        elif "news" in c.lower():
+            r = requests.get(url)
+            if r.status_code == 200:
+                data = r.json()
+
+                #Extract all articles
+                articles = data.get('articles', [])
+
+                #Speak the healines
+                for article in articles[:10]:
+                    speak(article['title'])
+
+        elif "list" in c.lower():
+            handleListOperations(c)    
 
         else:
             # Pass the command to openAi
