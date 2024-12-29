@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import requests
 from openai import OpenAI
 from plyer import notification
+import pyautogui
 
 load_dotenv()
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
@@ -47,6 +48,7 @@ def getWakeWord():
 
 # Function to handle open command
 def handleOpenCommand(c):
+    query = c.replace("open", "")
     try:
         if "open google" in c.lower():
             webbrowser.open("https://google.com")
@@ -58,6 +60,12 @@ def handleOpenCommand(c):
             webbrowser.open("https://youtube.com")
         elif "open linkedin" in c.lower():
             webbrowser.open("https://linkedin.com")
+        else :
+            pyautogui.press("super")
+            pyautogui.typewrite(query)
+            pyautogui.sleep(2)
+            pyautogui.press("enter")
+
     except Exception as e:
         print("Error; {0}".format(e)) 
 
@@ -135,7 +143,9 @@ def handleListOperations(c):
 
 
 # Function to handle general commands with the help of openai
-def handleAiProcess(command):
+def handleAiProcess(request):
+    global chat
+    chat.append({"role": "user", "content": request})
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
     client = OpenAI(
     api_key= OPENAI_API_KEY
@@ -145,11 +155,12 @@ def handleAiProcess(command):
     store=True,
     max_tokens=80,            # Limit the response length
     temperature=0.2,          # For StraightForward replies
-    messages=[{"role": "system", "content": "You are a virtual assitant skilled in general logic and reasoning tasks like Alexa and Google Cloud. Give short reponses."},
-        {"role": "user", "content": command}]
+    messages=chat
     )
 
-    return (completion.choices[0].message.content)
+    response = (completion.choices[0].message.content)
+    chat.append({"role": "assistant", "content": response})
+    return response
 
 # Function to process the input command.
 def processCommand(c):
@@ -182,21 +193,30 @@ def processCommand(c):
                     speak(article['title'])
 
         elif "list" in c.lower():
-            handleListOperations(c)    
+            handleListOperations(c)  
+
+        elif "search" in c.lower():
+            query = c.replace("search", "")
+            webbrowser.open(f"https://google.com/search?q={query}")
+
+        elif "clear chat" in c.lower():
+            global chat
+            chat = []
+            speak("Chat cleared successfully.")
 
         else:
             # Pass the command to openAi
-            # output = handleAiProcess(c)
-            # print(output)
-            # speak(output)
-            pass
-
+            response = handleAiProcess(c)
+            # print(response)
+            speak(response)
+            
     except Exception as e:
         print("Error; {0}".format(e))    
 
 # The program begins from here
 if __name__ == "__main__":
     speak("Initializing")
+    chat = []
     # print(sr.Microphone.list_microphone_names())
     while True:
         wake_word = getWakeWord()
